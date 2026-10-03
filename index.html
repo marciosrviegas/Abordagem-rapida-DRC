@@ -7,25 +7,27 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="DRC G4–G5">
+<meta name="apple-mobile-web-app-title" content="Abordagem rápida DRC">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
-<title>DRC G4–G5 — Apoio à decisão</title>
+<title>Abordagem rápida DRC</title>
 <style>
 :root{color-scheme:light dark;--bg:light-dark(#f5f7fa,#101317);--surface:light-dark(#fff,#171b20);--surface2:light-dark(#f0f3f7,#20262d);--text:light-dark(#17202a,#f2f5f7);--muted:light-dark(#5d6875,#aab4bf);--border:light-dark(#dce2e8,#303943);--accent:light-dark(#175cd3,#6ea1ff);--green:light-dark(#087443,#57d59b);--amber:light-dark(#a15c00,#ffbe63);--red:light-dark(#b42318,#ff7b72)}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}#app{min-height:100vh;background:var(--bg)}.wrap{max-width:1120px;margin:auto;padding:28px 20px 44px}.top{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-bottom:22px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}h1{font-size:30px;line-height:1.1;margin:6px 0}.sub{color:var(--muted);max-width:760px;line-height:1.5}.badge{border:1px solid var(--border);background:var(--surface);padding:9px 12px;border-radius:999px;font-size:12px;color:var(--muted)}.grid{display:grid;grid-template-columns:360px 1fr;gap:18px}.card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 6px 22px rgba(0,0,0,.04)}.card h2{font-size:16px;margin:0 0 14px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field.full{grid-column:1/-1}label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}input,select{width:100%;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:10px;padding:10px 11px;font-size:14px;outline:none}input:focus,select:focus{border-color:var(--accent)}.check{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:13px}.check input{width:auto}.actions{display:flex;gap:9px;margin-top:15px}.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:white}.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}.result-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.stage{font-weight:900;font-size:22px}.small{font-size:12px;color:var(--muted)}.recommend{border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:12px;padding:13px 14px;margin:10px 0;background:var(--surface2)}.recommend.green{border-left-color:var(--green)}.recommend.amber{border-left-color:var(--amber)}.recommend.red{border-left-color:var(--red)}.recommend h3{font-size:14px;margin:0 0 5px}.recommend p{font-size:13px;line-height:1.5;margin:0;color:var(--muted)}.tag{display:inline-block;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;padding:4px 7px;border-radius:999px;background:var(--surface);border:1px solid var(--border);margin-left:6px}.table{width:100%;border-collapse:collapse;font-size:12px}.table th,.table td{padding:9px 7px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}.table th{color:var(--muted);font-size:11px}.note{font-size:11px;color:var(--muted);line-height:1.5}.footer{margin-top:18px}.source{padding:10px 0;border-bottom:1px solid var(--border);font-size:12px}.source a{color:var(--accent);text-decoration:none}.hidden{display:none}.alert{padding:11px 13px;border-radius:10px;background:light-dark(#fff7e6,#30250f);border:1px solid light-dark(#f5d18b,#66501e);font-size:12px;line-height:1.45;margin-bottom:12px}.pillrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.pill{padding:6px 8px;border-radius:999px;background:var(--surface2);font-size:11px;font-weight:800}.section-title{font-size:13px;font-weight:900;margin:18px 0 7px}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.install-banner{position:sticky;top:0;z-index:20;margin:0 auto;padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:10px}.install-banner small{color:var(--muted)}.install-banner .btn{padding:7px 10px}.install-banner .secondary{font-size:18px;line-height:1}@media(max-width:850px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.fields{grid-template-columns:1fr}.field.full{grid-column:auto}.two{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div id="installBanner" class="install-banner hidden"><span><strong>Instalar app</strong><br><small>Adicione a DRC G4–G5 ao ecrã inicial.</small></span><button class="btn primary" onclick="installPWA()">Instalar</button><button class="btn secondary" onclick="dismissInstall()">×</button></div>
+<div id="installBanner" class="install-banner hidden"><span><strong>Instalar app</strong><br><small>Adicione a Abordagem rápida DRC ao ecrã inicial.</small></span><button class="btn primary" onclick="installPWA()">Instalar</button><button class="btn secondary" onclick="dismissInstall()">×</button></div>
 <div id="app"><div class="wrap">
-  <div class="top"><div><div class="eyebrow">Ferramenta clínica · versão pública 1.0 · 03/10/2026</div><h1>DRC G4–G5 não dialítica</h1><div class="sub">Apoio rápido à decisão para terapêutica cardiorrenal e metabólica. Introduza os dados do doente para obter uma leitura estruturada por TFGe, albuminúria, diabetes, IC e risco de hipercaliemia.</div></div><div class="badge">Apoio à decisão · não substitui julgamento clínico</div></div>
+  <div class="top"><div><div class="eyebrow">Ferramenta clínica · versão pública 1.0 · 03/10/2026</div><h1>Abordagem rápida DRC</h1><div class="sub">Apoio rápido à decisão para DRC G4–G5 não dialítica, terapêutica cardiorrenal e metabólica, e estratificação do risco de falência renal com a KFRE.</div></div><div class="badge">Apoio à decisão · não substitui julgamento clínico</div></div>
   <div class="grid">
     <section class="card">
       <h2>Dados do doente</h2>
       <div class="fields">
         <div class="field"><label for="egfr">TFGe (mL/min/1,73 m²)</label><input id="egfr" type="number" min="1" max="60" step="1" value="24"></div>
         <div class="field"><label for="acr">ACR (mg/g)</label><input id="acr" type="number" min="0" step="1" value="450"></div>
+        <div class="field"><label for="age">Idade (anos)</label><input id="age" type="number" min="18" max="100" step="1" value="65"></div>
+        <div class="field"><label for="sex">Sexo</label><select id="sex"><option value="female">Feminino</option><option value="male" selected>Masculino</option></select></div>
         <div class="field full"><label for="k">Potássio (mmol/L)</label><input id="k" type="number" min="2.5" max="7" step="0.1" value="4.6"></div>
       </div>
       <div class="section-title">Comorbilidades</div>
@@ -46,6 +48,8 @@
       <div class="result-head"><div><div class="small">Classificação renal</div><div id="stage" class="stage">G4 · A3</div></div><div id="riskPills" class="pillrow"></div></div>
       <div id="urgent" class="alert hidden"></div>
       <div id="recommendations"></div>
+      <div class="section-title">KFRE · risco de falência renal tratada</div>
+      <div id="kfre" class="recommend"></div>
       <div class="section-title">Checklist de consulta</div>
       <table class="table"><thead><tr><th>Domínio</th><th>Verificar</th><th>Comentário</th></tr></thead><tbody id="checklist"></tbody></table>
       <div class="section-title">Evidência usada</div>
@@ -69,7 +73,7 @@ if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.ser
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 function get(id){return document.getElementById(id)}
 function calculate(){
- const egfr=+get('egfr').value||0, acr=+get('acr').value||0, k=+get('k').value||0;
+ const egfr=+get('egfr').value||0, acr=+get('acr').value||0, age=+get('age').value||0, sex=get('sex').value, k=+get('k').value||0;
  const dm2=get('dm2').checked,hf=get('hf').checked,ascvd=get('ascvd').checked,htn=get('htn').checked;
  const sglt2=get('sglt2').checked,raas=get('raas').checked,finer=get('finer').checked,statin=get('statin').checked,glp1=get('glp1').checked;
  const g=egfr>=30?'G3b':egfr>=15?'G4':'G5'; const a=acr<30?'A1':acr<300?'A2':'A3';
@@ -87,11 +91,22 @@ function calculate(){
  if((ascvd||dm2||egfr<60)&&!statin){rec.push({c:'green',t:'Estatina · verificar indicação',p:'DRC é um marcador importante de risco cardiovascular. Decidir pela idade, DCV, diabetes, risco global e contexto clínico; não usar a ferramenta como substituto da decisão lipídica individual.'});}
  if(k>=5.5){get('urgent').classList.remove('hidden');get('urgent').innerHTML='<strong>Atenção ao potássio:</strong> valor ≥5,5 mmol/L. Antes de iniciar/aumentar fármacos que podem agravar hipercaliemia, confirmar resultado, rever fármacos/dieta e avaliar causas tratáveis. Se grave/sintomático, seguir protocolo de emergência.';}else if(k>=5.0){get('urgent').classList.remove('hidden');get('urgent').innerHTML='<strong>Potássio 5,0–5,4:</strong> rever fatores modificáveis e monitorizar antes de intensificar terapêutica com risco de hipercaliemia.';}else{get('urgent').classList.add('hidden');}
  get('recommendations').innerHTML=rec.map(r=>`<div class="recommend ${r.c}"><h3>${esc(r.t)}</h3><p>${esc(r.p)}</p></div>`).join('') || '<div class="recommend"><h3>Sem alerta específico</h3><p>Rever progressão da DRC, risco cardiovascular, complicações e preparação para terapêutica de substituição renal.</p></div>';
+ if(age>=18 && age<=100 && egfr>0 && acr>0){
+   const male=sex==='male'?1:0;
+   const lp=-0.2201*(age/10-7.036)+0.2467*(male-0.5642)-0.5567*(egfr/5-7.222)+0.4510*(Math.log(acr)-5.137);
+   const risk2=1-Math.pow(0.9832,Math.exp(lp));
+   const risk5=1-Math.pow(0.9365,Math.exp(lp));
+   get('kfre').className='recommend '+(risk2>=0.10||risk5>=0.05?'amber':'green');
+   get('kfre').innerHTML='<h3>KFRE 4 variáveis · calibração não norte-americana</h3><p>Risco de falência renal tratada (diálise ou transplante): <strong>'+((risk2*100).toFixed(1))+'% em 2 anos</strong> e <strong>'+((risk5*100).toFixed(1))+'% em 5 anos</strong>.</p><p style="margin-top:6px">Baseado em idade, sexo, TFGe e ACR.</p>';
+ }else{
+   get('kfre').className='recommend amber';
+   get('kfre').innerHTML='<h3>KFRE · dados insuficientes</h3><p>Introduza idade, sexo, TFGe e ACR (ACR &gt;0) para calcular o risco.</p>';
+ }
  const rows=[['Progressão renal',`TFGe ${egfr} + ACR ${acr} mg/g`,`Repetir tendência e estratificar risco; evitar decisões com um valor isolado.`],['Potássio',`${k.toFixed(1)} mmol/L`,k>=5?'Corrigir/reavaliar antes de intensificar fármacos hiperK.':'Adequado para a maioria das opções, mantendo monitorização.'],['Volume/PA',htn?'HTA presente':'Sem HTA assinalada','Rever PA, peso, edema, diurético e ortostatismo.'],['Anemia', 'Hb · ferritina · TSAT','Avaliar e tratar complicações da DRC.'],['CKD-MBD','Ca · P · PTH · FA','Interpretar tendências e contexto, sobretudo em G4–G5.'],['Acidose','HCO₃⁻','Pesquisar/tratar acidose metabólica persistente.'],['TSFR','Transplante · acesso · educação','Em G4 avançada/G5, antecipar planeamento conforme trajetória e contexto.']];
  get('checklist').innerHTML=rows.map(r=>`<tr><td><strong>${esc(r[0])}</strong></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('');
- get('evidence').innerHTML=`<div class="source"><strong>KDIGO 2024:</strong> recomendações para SGLT2i a partir de TFGe ≥20 em contextos definidos e continuidade após queda abaixo de 20 se tolerado. <a href="https://kdigo.org/guidelines/ckd-evaluation-and-management/" target="_blank">KDIGO</a></div><div class="source"><strong>EMPA-KIDNEY:</strong> 6609 doentes; inclusão com TFGe 20–45 independentemente da albuminúria, com empagliflozina 10 mg. <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2204233" target="_blank">NEJM</a></div><div class="source"><strong>FLOW:</strong> DM2 + DRC, incluindo TFGe 25–&lt;50; semaglutido reduziu o endpoint renal/CV primário (HR 0,76). <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2403347" target="_blank">NEJM</a></div><div class="source"><strong>FIDELIO-DKD:</strong> evidência de finerenona em DM2 + DRC albuminúrica. <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2025845" target="_blank">NEJM</a></div>`;
+ get('evidence').innerHTML=`<div class="source"><strong>KDIGO 2024:</strong> recomendações para SGLT2i a partir de TFGe ≥20 em contextos definidos e continuidade após queda abaixo de 20 se tolerado. <a href="https://kdigo.org/guidelines/ckd-evaluation-and-management/" target="_blank">KDIGO</a></div><div class="source"><strong>KFRE 4 variáveis:</strong> estima o risco de falência renal tratada aos 2 e 5 anos em DRC G3–G5, utilizando idade, sexo, TFGe e ACR. A versão não norte-americana usa calibração específica para populações fora da América do Norte. <a href="https://kidneyfailurerisk.com/" target="_blank">Kidney Failure Risk Equation</a></div><div class="source"><strong>EMPA-KIDNEY:</strong> 6609 doentes; inclusão com TFGe 20–45 independentemente da albuminúria, com empagliflozina 10 mg. <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2204233" target="_blank">NEJM</a></div><div class="source"><strong>FLOW:</strong> DM2 + DRC, incluindo TFGe 25–&lt;50; semaglutido reduziu o endpoint renal/CV primário (HR 0,76). <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2403347" target="_blank">NEJM</a></div><div class="source"><strong>FIDELIO-DKD:</strong> evidência de finerenona em DM2 + DRC albuminúrica. <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2025845" target="_blank">NEJM</a></div>`;
 }
-function resetForm(){['egfr','acr','k'].forEach((id,i)=>get(id).value=[24,450,4.6][i]);['dm2','htn'].forEach(id=>get(id).checked=true);['hf','ascvd','sglt2','raas','finer','statin','glp1'].forEach(id=>get(id).checked=false);get('raas').checked=true;calculate()}
+function resetForm(){['egfr','acr','k','age'].forEach((id,i)=>get(id).value=[24,450,4.6,65][i]);get('sex').value='male';['dm2','htn'].forEach(id=>get(id).checked=true);['hf','ascvd','sglt2','raas','finer','statin','glp1'].forEach(id=>get(id).checked=false);get('raas').checked=true;calculate()}
 calculate();
 </script>
 </body></html>
