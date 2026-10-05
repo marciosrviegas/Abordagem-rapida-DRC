@@ -53,29 +53,11 @@
 </div></div>
 <script>
 let deferredInstallPrompt=null;
-let installDismissed=false;
-try{installDismissed=sessionStorage.getItem('drc-install-dismissed')==='1'}catch(e){}
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();
-  deferredInstallPrompt=e;
-  if(!installDismissed)get('installBanner').classList.remove('hidden');
-});
-window.addEventListener('appinstalled',()=>{
-  deferredInstallPrompt=null;
-  get('installBanner').classList.add('hidden');
-});
-async function installPWA(){
-  if(!deferredInstallPrompt)return;
-  const promptEvent=deferredInstallPrompt;
-  deferredInstallPrompt=null;
-  get('installBanner').classList.add('hidden');
-  try{await promptEvent.prompt();await promptEvent.userChoice}catch(e){}
-}
-function dismissInstall(){
-  installDismissed=true;
-  get('installBanner').classList.add('hidden');
-  try{sessionStorage.setItem('drc-install-dismissed','1')}catch(e){}
-}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;get('installBanner').classList.remove('hidden')});
+window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;get('installBanner').classList.add('hidden')});
+async function installPWA(){if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;get('installBanner').classList.add('hidden')}
+function dismissInstall(){get('installBanner').classList.add('hidden');localStorage.setItem('drc-install-dismissed','1')}
+if(localStorage.getItem('drc-install-dismissed')==='1')setTimeout(()=>get('installBanner').classList.add('hidden'),0);
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 function get(id){return document.getElementById(id)}
@@ -103,15 +85,19 @@ if(finer)rec.push({c:'amber',t:'Finerenona · monitorizar K',p:'A hipercaliemia 
 if(dm2&&!glp1)rec.push({c:'amber',t:'GLP-1 RA · avaliar conforme controlo metabólico e risco CV',p:'Considerar um GLP-1 RA de ação prolongada se as metas glicémicas individualizadas não forem atingidas apesar de terapêutica adequada, incluindo SGLT2i quando indicado, ou se esta não puder ser usada. A aplicação não dispõe de HbA1c nem de toda a informação sobre terapêutica antidiabética, pelo que a decisão deve ser individualizada. Priorizar agentes com benefício cardiovascular documentado.'});
 const hasCkdPattern=egfr<60||acr>=30;
 if(!statin){
- if(hasCkdPattern){
+ if(ascvd){
+  rec.push({c:'green',t:'Estatina · indicada por doença cardiovascular aterosclerótica',p:'Doença cardiovascular aterosclerótica estabelecida constitui indicação para terapêutica hipolipemiante, independentemente da presença de DRC. Utilizar estatina na dose máxima tolerada e avaliar o LDL-C para determinar necessidade de intensificação com terapêutica não-estatínica, conforme o risco e os objetivos de LDL-C.'});
+ }else if(hasCkdPattern){
   if(age>=50){
    if(egfr>=60)rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC G1–G2, a KDIGO recomenda tratamento com estatina. Assim, esta recomendação aplica-se a G1/G2 com A2/A3 quando a albuminúria é persistente e estabelece DRC. Em G3a–G5, recomenda-se estatina ou estatina/ezetimiba. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, individualizar.'});
    else rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC e TFGe <60 (G3a–G5), a KDIGO recomenda estatina ou estatina/ezetimiba. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, individualizar.'});
-  }else if(dm2||ascvd)rec.push({c:'green',t:'Estatina · considerar segundo critérios KDIGO',p:'Em adultos 18–49 anos com DRC e diabetes ou doença cardiovascular relevante, considerar tratamento com estatina. Individualizar conforme contexto clínico.'});
+  }else if(dm2)rec.push({c:'green',t:'Estatina · considerar segundo critérios KDIGO',p:'Em adultos 18–49 anos com DRC e diabetes, considerar tratamento com estatina. Individualizar conforme contexto clínico.'});
   else rec.push({c:'amber',t:'Estatina · individualizar',p:'Em adultos 18–49 anos com DRC sem critérios específicos, individualizar segundo risco cardiovascular e contexto clínico.'});
  }else{
   rec.push({c:'amber',t:'Estatina · avaliar risco cardiovascular',p:'TFGe G1/G2 e ACR A1, sem evidência suficiente de DRC pelos dados introduzidos. A indicação de estatina deve basear-se no risco cardiovascular global e nas indicações clínicas habituais, e não na DRC isoladamente.'});
  }
+}else if(ascvd){
+ rec.push({c:'green',t:'Estatina · manter e avaliar intensificação',p:'Na presença de doença cardiovascular aterosclerótica, manter a estatina na dose máxima tolerada e avaliar o LDL-C. Se o objetivo não for atingido, considerar intensificação com ezetimiba e/ou outros agentes com benefício cardiovascular comprovado, de acordo com o risco e o objetivo de LDL-C.'});
 }else if(age>=50&&hasCkdPattern){
  rec.push({c:'green',t:'Estatina · manter, se tolerada',p:'Em adultos ≥50 anos com DRC, manter se tolerada. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, reavaliar periodicamente a adequação.'});
 }
