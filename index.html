@@ -53,11 +53,29 @@
 </div></div>
 <script>
 let deferredInstallPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;get('installBanner').classList.remove('hidden')});
-window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;get('installBanner').classList.add('hidden')});
-async function installPWA(){if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null;get('installBanner').classList.add('hidden')}
-function dismissInstall(){get('installBanner').classList.add('hidden');localStorage.setItem('drc-install-dismissed','1')}
-if(localStorage.getItem('drc-install-dismissed')==='1')setTimeout(()=>get('installBanner').classList.add('hidden'),0);
+let installDismissed=false;
+try{installDismissed=sessionStorage.getItem('drc-install-dismissed')==='1'}catch(e){}
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  if(!installDismissed)get('installBanner').classList.remove('hidden');
+});
+window.addEventListener('appinstalled',()=>{
+  deferredInstallPrompt=null;
+  get('installBanner').classList.add('hidden');
+});
+async function installPWA(){
+  if(!deferredInstallPrompt)return;
+  const promptEvent=deferredInstallPrompt;
+  deferredInstallPrompt=null;
+  get('installBanner').classList.add('hidden');
+  try{await promptEvent.prompt();await promptEvent.userChoice}catch(e){}
+}
+function dismissInstall(){
+  installDismissed=true;
+  get('installBanner').classList.add('hidden');
+  try{sessionStorage.setItem('drc-install-dismissed','1')}catch(e){}
+}
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 function get(id){return document.getElementById(id)}
@@ -84,22 +102,19 @@ if(dm2&&acr>=30&&egfr>=25&&k<=4.8&&!finer)rec.push({c:'green',t:'Finerenona · a
 if(finer)rec.push({c:'amber',t:'Finerenona · monitorizar K',p:'A hipercaliemia é o principal limite prático. Reavaliar K e função renal periodicamente e ajustar/pausar conforme o valor e o protocolo clínico.'});
 if(dm2&&!glp1)rec.push({c:'amber',t:'GLP-1 RA · avaliar conforme controlo metabólico e risco CV',p:'Considerar um GLP-1 RA de ação prolongada se as metas glicémicas individualizadas não forem atingidas apesar de terapêutica adequada, incluindo SGLT2i quando indicado, ou se esta não puder ser usada. A aplicação não dispõe de HbA1c nem de toda a informação sobre terapêutica antidiabética, pelo que a decisão deve ser individualizada. Priorizar agentes com benefício cardiovascular documentado.'});
 const hasCkdPattern=egfr<60||acr>=30;
+const statinAgeNote=age>75?' Em idade >75 anos, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, individualizar.':'';
 if(!statin){
- if(ascvd){
-  rec.push({c:'green',t:'Estatina · indicada por doença cardiovascular aterosclerótica',p:'Doença cardiovascular aterosclerótica estabelecida constitui indicação para terapêutica hipolipemiante, independentemente da presença de DRC. Utilizar estatina na dose máxima tolerada e avaliar o LDL-C para determinar necessidade de intensificação com terapêutica não-estatínica, conforme o risco e os objetivos de LDL-C.'});
- }else if(hasCkdPattern){
+ if(hasCkdPattern){
   if(age>=50){
-   if(egfr>=60)rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC G1–G2, a KDIGO recomenda tratamento com estatina. Assim, esta recomendação aplica-se a G1/G2 com A2/A3 quando a albuminúria é persistente e estabelece DRC. Em G3a–G5, recomenda-se estatina ou estatina/ezetimiba. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, individualizar.'});
-   else rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC e TFGe <60 (G3a–G5), a KDIGO recomenda estatina ou estatina/ezetimiba. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, individualizar.'});
-  }else if(dm2)rec.push({c:'green',t:'Estatina · considerar segundo critérios KDIGO',p:'Em adultos 18–49 anos com DRC e diabetes, considerar tratamento com estatina. Individualizar conforme contexto clínico.'});
+   if(egfr>=60)rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC G1–G2, a KDIGO recomenda tratamento com estatina. Assim, esta recomendação aplica-se a G1/G2 com A2/A3 quando a albuminúria é persistente e estabelece DRC. Em G3a–G5, recomenda-se estatina ou estatina/ezetimiba.'+statinAgeNote});
+   else rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC e TFGe <60 (G3a–G5), a KDIGO recomenda estatina ou estatina/ezetimiba.'+statinAgeNote});
+  }else if(dm2||ascvd)rec.push({c:'green',t:'Estatina · considerar segundo critérios KDIGO',p:'Em adultos 18–49 anos com DRC e diabetes ou doença cardiovascular relevante, considerar tratamento com estatina. Individualizar conforme contexto clínico.'});
   else rec.push({c:'amber',t:'Estatina · individualizar',p:'Em adultos 18–49 anos com DRC sem critérios específicos, individualizar segundo risco cardiovascular e contexto clínico.'});
  }else{
   rec.push({c:'amber',t:'Estatina · avaliar risco cardiovascular',p:'TFGe G1/G2 e ACR A1, sem evidência suficiente de DRC pelos dados introduzidos. A indicação de estatina deve basear-se no risco cardiovascular global e nas indicações clínicas habituais, e não na DRC isoladamente.'});
  }
-}else if(ascvd){
- rec.push({c:'green',t:'Estatina · manter e avaliar intensificação',p:'Na presença de doença cardiovascular aterosclerótica, manter a estatina na dose máxima tolerada e avaliar o LDL-C. Se o objetivo não for atingido, considerar intensificação com ezetimiba e/ou outros agentes com benefício cardiovascular comprovado, de acordo com o risco e o objetivo de LDL-C.'});
 }else if(age>=50&&hasCkdPattern){
- rec.push({c:'green',t:'Estatina · manter, se tolerada',p:'Em adultos ≥50 anos com DRC, manter se tolerada. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, reavaliar periodicamente a adequação.'});
+ rec.push({c:'green',t:'Estatina · manter, se tolerada',p:'Em adultos ≥50 anos com DRC, manter se tolerada.'+statinAgeNote.replace('individualizar.','reavaliar periodicamente a adequação.')});
 }
 if(ascvd||dm2||egfr<60)rec.push({c:'amber',t:'Revisão terapêutica transversal',p:'Confirmar adesão, doses adequadas à TFGe, interações e fármacos potencialmente nefrotóxicos (nomeadamente AINEs). Evitar duplicação ou combinação inadequada de terapêuticas com risco renal/hipercaliemia.'});
 if(k>=6.5){get('urgent').classList.remove('hidden');get('urgent').style.background='light-dark(#fff0f0,#351416)';get('urgent').style.borderColor='light-dark(#f3a6a6,#7a3034)';get('urgent').innerHTML='<strong>🚨 Hipercaliemia grave (K ≥6,5 mmol/L):</strong> confirmar rapidamente se necessário, realizar ECG e <strong>encaminhar para avaliação urgente em Serviço de Urgência</strong>, de acordo com o contexto clínico e protocolo local. Se houver sintomas ou alterações eletrocardiográficas, não atrasar a avaliação.'}else if(k>=6.0){get('urgent').classList.remove('hidden');get('urgent').style.background='light-dark(#fff0f0,#351416)';get('urgent').style.borderColor='light-dark(#f3a6a6,#7a3034)';get('urgent').innerHTML='<strong>🔴 Hipercaliemia importante (K 6,0–6,4 mmol/L):</strong> confirmar rapidamente, realizar ECG e <strong>avaliar necessidade de referenciação urgente ao Serviço de Urgência</strong>, considerando sintomas, alterações no ECG, contexto clínico e possibilidade de pseudohipercaliemia.'}else if(k>=5.5){get('urgent').classList.remove('hidden');get('urgent').style.background='';get('urgent').style.borderColor='';get('urgent').innerHTML='<strong>⚠️ Hipercaliemia (K 5,5–5,9 mmol/L):</strong> confirmar resultado, rever fármacos e outras causas tratáveis e monitorizar. Antes de iniciar ou intensificar terapêuticas que possam aumentar o potássio, corrigir fatores modificáveis.'}else if(k>=5){get('urgent').classList.remove('hidden');get('urgent').style.background='';get('urgent').style.borderColor='';get('urgent').innerHTML='<strong>Potássio 5,0–5,4 mmol/L:</strong> rever fatores modificáveis e monitorizar antes de intensificar terapêutica com risco de hipercaliemia.'}else{get('urgent').classList.add('hidden');get('urgent').style.background='';get('urgent').style.borderColor='';}
