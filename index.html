@@ -103,7 +103,6 @@ if(risk2!==null&&risk5!==null&&egfr<60){get('referralSection').classList.remove(
 
 // Resumo clínico: conclusão integrada da classificação, KFRE, potássio, terapêutica e referenciação.
 let summary=[];
-const a=acr<30?'A1':acr<300?'A2':'A3';
 if((egfr>=90||egfr>=60&&egfr<90)&&acr<30){
   summary.push(`TFGe ${g} ${a}, sem evidência suficiente de DRC pelos dados introduzidos isoladamente. Confirmar persistência ≥3 meses ou a presença de outros marcadores de lesão renal.`);
 }else{
