@@ -66,24 +66,37 @@ const egfr=+get('egfr').value||0,acr=+get('acr').value||0,age=+get('age').value|
 const dm2=get('dm2').checked,hf=get('hf').checked,ascvd=get('ascvd').checked,htn=get('htn').checked,sglt2=get('sglt2').checked,raas=get('raas').checked,finer=get('finer').checked,statin=get('statin').checked,glp1=get('glp1').checked;
 if(!egfr||!acr||!age||!sex||!k){get('stage').textContent='—';get('heroSub').textContent='Introduza os dados para classificar a DRC';get('riskPills').innerHTML='';get('urgent').classList.add('hidden');get('recommendations').innerHTML='';get('therapyTitle').classList.add('hidden');get('initialMessage').classList.remove('hidden');get('resultsContent').classList.add('hidden');get('referralSection').classList.add('hidden');get('summarySection').classList.add('hidden');get('clinicalSummary').innerHTML='';return}
 get('initialMessage').classList.add('hidden');get('resultsContent').classList.remove('hidden');get('therapyTitle').classList.remove('hidden');
-const g=egfr>=90?'G1':egfr>=60?'G2':egfr>=45?'G3a':egfr>=30?'G3b':egfr>=15?'G4':'G5',a=acr<30?'A1':acr<300?'A2':'A3';get('stage').textContent=`${g} · ${a}`; get('heroSub').textContent = g==='G1' || g==='G2' ? 'TFGe preservada · confirmar marcadores de lesão renal e cronicidade' : (a==='A3' ? 'Risco de progressão aumentado · integrar TFGe, albuminúria e KFRE' : 'Integrar TFGe, albuminúria, evolução e contexto clínico');
+const g=egfr>=90?'G1':egfr>=60?'G2':egfr>=45?'G3a':egfr>=30?'G3b':egfr>=15?'G4':'G5',a=acr<30?'A1':acr<300?'A2':'A3';get('stage').textContent=`${g} · ${a}`; get('heroSub').textContent = (g==='G1' || g==='G2') ? (a==='A1' ? 'TFGe preservada · G1/G2 A1 não demonstra DRC por si só' : 'TFGe preservada · G1/G2 A2/A3 corresponde a DRC se a albuminúria for persistente ≥3 meses') : (a==='A3' ? 'Risco de progressão aumentado · integrar TFGe, albuminúria e KFRE' : 'Integrar TFGe, albuminúria, evolução e contexto clínico');
 let pills=[];if(dm2)pills.push('DM2');if(hf)pills.push('IC');if(ascvd)pills.push('DCV aterosclerótica');if(acr>=300)pills.push('A3');else if(acr>=30)pills.push('A2');if(k>=5)pills.push('K elevado');get('riskPills').innerHTML=pills.map(x=>`<span class="pill">${esc(x)}</span>`).join('');
 let rec=[];
 if(egfr<15)rec.push({c:'amber',t:'G5: foco adicional em preparação de TSFR',p:'Reavaliar sintomas urémicos, complicações da DRC, trajetória da TFGe e plano de transplante/acesso. Não extrapolar automaticamente RCTs de TFGe ≥20–25 para G5 avançada.'});
 if(!sglt2&&egfr>=20&&(acr>=200||hf||egfr<=45))rec.push({c:'green',t:'SGLT2i · considerar/iniciar',p:'Recomendado em DRC com TFGe ≥20 e ACR ≥200 mg/g, ou na presença de insuficiência cardíaca; em TFGe 20–45, pode ser usado mesmo com ACR <200 mg/g. Antecipar pequena queda inicial da TFGe e rever estado volémico.'});
 if(sglt2)rec.push({c:'green',t:'SGLT2i · manter se tolerado',p:'Não suspender automaticamente apenas porque a TFGe desceu <20. Suspender temporariamente em jejum prolongado, cirurgia ou doença aguda grave.'});
 if(raas&&acr>=30)rec.push({c:'green',t:'IECA/ARA · manter e otimizar',p:'Albuminúria A2/A3 favorece bloqueio do SRAA, sobretudo na presença de HTA. Titular para a maior dose tolerada. Reavaliar creatinina e K cerca de 2–4 semanas após iniciar ou aumentar a dose.'});
-if(!raas&&acr>=30&&egfr>=15&&egfr<60){
- if(dm2){rec.push({c:'green',t:'IECA/ARA · iniciar/avaliar',p:'Na DRC com diabetes e albuminúria A2/A3, a KDIGO recomenda IECA ou ARA, titulados para a maior dose aprovada tolerada. Monitorizar PA, creatinina e potássio 2–4 semanas após iniciar ou aumentar a dose.'});}
- else if(acr>=300){rec.push({c:'green',t:'IECA/ARA · iniciar/avaliar',p:'Na DRC com albuminúria A3, a KDIGO recomenda IECA ou ARA mesmo sem diabetes. Titular para a maior dose aprovada tolerada e monitorizar PA, creatinina e potássio 2–4 semanas após iniciar ou aumentar a dose.'});}
- else {rec.push({c:'amber',t:'IECA/ARA · considerar',p:'Na DRC não diabética com albuminúria A2, a KDIGO sugere iniciar IECA ou ARA. Titular para a maior dose aprovada tolerada e monitorizar PA, creatinina e potássio.'});}
+if(!raas&&acr>=30&&egfr>=15){
+ if(dm2){rec.push({c:'green',t:'IECA/ARA · iniciar/avaliar',p:'Na DRC com diabetes e albuminúria A2/A3, a KDIGO recomenda IECA ou ARA, incluindo em G1–G4, titulados para a maior dose aprovada tolerada. Monitorizar PA, creatinina e potássio 2–4 semanas após iniciar ou aumentar a dose.'});}
+ else if(acr>=300){rec.push({c:'green',t:'IECA/ARA · iniciar/avaliar',p:'Na DRC com albuminúria A3, a KDIGO recomenda IECA ou ARA mesmo sem diabetes, incluindo em G1–G4. Titular para a maior dose aprovada tolerada e monitorizar PA, creatinina e potássio 2–4 semanas após iniciar ou aumentar a dose.'});}
+ else {rec.push({c:'amber',t:'IECA/ARA · considerar',p:'Na DRC não diabética com albuminúria A2, a KDIGO sugere iniciar IECA ou ARA, incluindo em G1–G4. Titular para a maior dose aprovada tolerada e monitorizar PA, creatinina e potássio.'});}
 }
 if(!raas&&acr<30&&(htn||hf)){rec.push({c:'amber',t:'IECA/ARA · avaliar indicação clínica',p:'Mesmo com A1, um IECA ou ARA pode estar indicado para tratamento da HTA ou da insuficiência cardíaca com fração de ejeção reduzida. A decisão deve seguir a indicação clínica específica.'});}
 if(raas&&acr>=30)rec.push({c:'amber',t:'IECA/ARA · atenção à creatinina/K',p:'Um aumento ligeiro da creatinina após iniciar/titular não implica suspensão automática. Se aumento >30%, procurar causas reversíveis como hipovolémia, AINEs ou outros fatores hemodinâmicos.'});
 if(dm2&&acr>=30&&egfr>=25&&k<=4.8&&!finer)rec.push({c:'green',t:'Finerenona · avaliar elegibilidade',p:'DM2 + DRC albuminúrica + TFGe ≥25 e potássio ≤4,8 mmol/L: considerar finerenona após terapêutica de base otimizada, incluindo SRAA na maior dose tolerada. Reavaliar K aproximadamente 4 semanas após iniciar ou alterar a dose.'});
 if(finer)rec.push({c:'amber',t:'Finerenona · monitorizar K',p:'A hipercaliemia é o principal limite prático. Reavaliar K e função renal periodicamente e ajustar/pausar conforme o valor e o protocolo clínico.'});
-if(dm2&&!glp1)rec.push({c:'green',t:'GLP-1 RA · considerar se necessário',p:'Considerar um GLP-1 RA de ação prolongada se as metas glicémicas individualizadas não forem atingidas apesar de metformina e SGLT2i, ou se estes não puderem ser usados. Priorizar agentes com benefício cardiovascular documentado.'});
-if(!statin){if(age>=50)rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC G1–G5, a KDIGO recomenda tratamento com estatina (ou estatina/ezetimiba em G3a–G5). Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, individualizar a decisão considerando benefício esperado, tolerância, polifarmácia e objetivos de cuidados.'});else if(dm2||ascvd)rec.push({c:'green',t:'Estatina · considerar segundo critérios KDIGO',p:'Em adultos 18–49 anos com DRC e diabetes ou doença cardiovascular relevante, considerar tratamento com estatina. Individualizar conforme contexto clínico.'});else rec.push({c:'amber',t:'Estatina · individualizar',p:'Em adultos 18–49 anos sem critérios específicos, individualizar segundo outros fatores de risco cardiovascular e contexto clínico.'});}else if(age>=50)rec.push({c:'green',t:'Estatina · manter, se tolerada',p:'Em adultos ≥50 anos com DRC, manter se tolerada. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, reavaliar periodicamente a adequação da terapêutica.'});
+if(dm2&&!glp1)rec.push({c:'amber',t:'GLP-1 RA · avaliar conforme controlo metabólico e risco CV',p:'Considerar um GLP-1 RA de ação prolongada se as metas glicémicas individualizadas não forem atingidas apesar de terapêutica adequada, incluindo SGLT2i quando indicado, ou se esta não puder ser usada. A aplicação não dispõe de HbA1c nem de toda a informação sobre terapêutica antidiabética, pelo que a decisão deve ser individualizada. Priorizar agentes com benefício cardiovascular documentado.'});
+const hasCkdPattern=egfr<60||acr>=30;
+if(!statin){
+ if(hasCkdPattern){
+  if(age>=50){
+   if(egfr>=60)rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC G1–G2, a KDIGO recomenda tratamento com estatina. Assim, esta recomendação aplica-se a G1/G2 com A2/A3 quando a albuminúria é persistente e estabelece DRC. Em G3a–G5, recomenda-se estatina ou estatina/ezetimiba. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, individualizar.'});
+   else rec.push({c:'green',t:'Estatina · recomendada pela KDIGO 2024',p:'Em adultos ≥50 anos com DRC e TFGe <60 (G3a–G5), a KDIGO recomenda estatina ou estatina/ezetimiba. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, individualizar.'});
+  }else if(dm2||ascvd)rec.push({c:'green',t:'Estatina · considerar segundo critérios KDIGO',p:'Em adultos 18–49 anos com DRC e diabetes ou doença cardiovascular relevante, considerar tratamento com estatina. Individualizar conforme contexto clínico.'});
+  else rec.push({c:'amber',t:'Estatina · individualizar',p:'Em adultos 18–49 anos com DRC sem critérios específicos, individualizar segundo risco cardiovascular e contexto clínico.'});
+ }else{
+  rec.push({c:'amber',t:'Estatina · avaliar risco cardiovascular',p:'TFGe G1/G2 e ACR A1, sem evidência suficiente de DRC pelos dados introduzidos. A indicação de estatina deve basear-se no risco cardiovascular global e nas indicações clínicas habituais, e não na DRC isoladamente.'});
+ }
+}else if(age>=50&&hasCkdPattern){
+ rec.push({c:'green',t:'Estatina · manter, se tolerada',p:'Em adultos ≥50 anos com DRC, manter se tolerada. Em idade muito avançada, fragilidade, prognóstico limitado ou elevada carga de comorbilidade, reavaliar periodicamente a adequação.'});
+}
 if(ascvd||dm2||egfr<60)rec.push({c:'amber',t:'Revisão terapêutica transversal',p:'Confirmar adesão, doses adequadas à TFGe, interações e fármacos potencialmente nefrotóxicos (nomeadamente AINEs). Evitar duplicação ou combinação inadequada de terapêuticas com risco renal/hipercaliemia.'});
 if(k>=6.5){get('urgent').classList.remove('hidden');get('urgent').style.background='light-dark(#fff0f0,#351416)';get('urgent').style.borderColor='light-dark(#f3a6a6,#7a3034)';get('urgent').innerHTML='<strong>🚨 Hipercaliemia grave (K ≥6,5 mmol/L):</strong> confirmar rapidamente se necessário, realizar ECG e <strong>encaminhar para avaliação urgente em Serviço de Urgência</strong>, de acordo com o contexto clínico e protocolo local. Se houver sintomas ou alterações eletrocardiográficas, não atrasar a avaliação.'}else if(k>=6.0){get('urgent').classList.remove('hidden');get('urgent').style.background='light-dark(#fff0f0,#351416)';get('urgent').style.borderColor='light-dark(#f3a6a6,#7a3034)';get('urgent').innerHTML='<strong>🔴 Hipercaliemia importante (K 6,0–6,4 mmol/L):</strong> confirmar rapidamente, realizar ECG e <strong>avaliar necessidade de referenciação urgente ao Serviço de Urgência</strong>, considerando sintomas, alterações no ECG, contexto clínico e possibilidade de pseudohipercaliemia.'}else if(k>=5.5){get('urgent').classList.remove('hidden');get('urgent').style.background='';get('urgent').style.borderColor='';get('urgent').innerHTML='<strong>⚠️ Hipercaliemia (K 5,5–5,9 mmol/L):</strong> confirmar resultado, rever fármacos e outras causas tratáveis e monitorizar. Antes de iniciar ou intensificar terapêuticas que possam aumentar o potássio, corrigir fatores modificáveis.'}else if(k>=5){get('urgent').classList.remove('hidden');get('urgent').style.background='';get('urgent').style.borderColor='';get('urgent').innerHTML='<strong>Potássio 5,0–5,4 mmol/L:</strong> rever fatores modificáveis e monitorizar antes de intensificar terapêutica com risco de hipercaliemia.'}else{get('urgent').classList.add('hidden');get('urgent').style.background='';get('urgent').style.borderColor='';}
 get('recommendations').innerHTML=rec.map(r=>`<div class="recommend ${r.c}"><h3>${esc(r.t)}</h3><p>${esc(r.p)}</p></div>`).join('')||'<div class="recommend"><h3>Sem alerta específico</h3><p>Rever progressão da DRC, risco cardiovascular, complicações e preparação para terapêutica de substituição renal.</p></div>';
@@ -103,8 +116,10 @@ if(risk2!==null&&risk5!==null&&egfr<60){get('referralSection').classList.remove(
 
 // Resumo clínico: conclusão integrada da classificação, KFRE, potássio, terapêutica e referenciação.
 let summary=[];
-if((egfr>=90||egfr>=60&&egfr<90)&&acr<30){
+if((g==='G1'||g==='G2')&&a==='A1'){
   summary.push(`TFGe ${g} ${a}, sem evidência suficiente de DRC pelos dados introduzidos isoladamente. Confirmar persistência ≥3 meses ou a presença de outros marcadores de lesão renal.`);
+}else if((g==='G1'||g==='G2')&&(a==='A2'||a==='A3')){
+  summary.push(`DRC ${g} ${a}, desde que a albuminúria seja persistente ≥3 meses ou exista outro marcador de lesão renal crónica.`);
 }else{
   summary.push(`DRC ${g} ${a}.`);
 }
@@ -119,13 +134,14 @@ if(risk2!==null&&risk5!==null){
 let priorities=[];
 if(k>=5.5) priorities.push('priorizar avaliação e correção da hipercaliemia antes de intensificar fármacos com risco de hiperK');
 else if(k<3.5) priorities.push('reavaliar e corrigir a hipocaliemia');
-if(!sglt2&&egfr>=20&&egfr<90) priorities.push('considerar início de SGLT2i');
+if(!sglt2&&egfr>=20&&(acr>=200||hf||egfr<=45)) priorities.push('considerar início de SGLT2i');
 if(raas&&acr>=30) priorities.push('manter/otimizar o SRAA');
-else if(!raas&&acr>=30&&egfr>=15&&egfr<60) priorities.push('avaliar início de IECA/ARA');
+else if(!raas&&acr>=30&&egfr>=15) priorities.push('avaliar início de IECA/ARA');
 else if(!raas&&acr<30&&(htn||hf)) priorities.push('avaliar indicação de IECA/ARA pela comorbilidade');
 if(dm2&&acr>=30&&egfr>=25&&k<=4.8&&!finer) priorities.push('avaliar elegibilidade para finerenona');
-if(dm2&&!glp1&&priorities.length<3) priorities.push('considerar GLP-1 RA conforme fenótipo clínico');
-if(!statin&&age>=50&&priorities.length<3) priorities.push('avaliar estatina segundo KDIGO, individualizando em idade muito avançada ou fragilidade');
+if(dm2&&!glp1&&priorities.length<3) priorities.push('avaliar GLP-1 RA conforme controlo metabólico e risco CV');
+if(!statin&&age>=50&&hasCkdPattern&&priorities.length<3) priorities.push('avaliar estatina segundo KDIGO, individualizando em idade muito avançada ou fragilidade');
+if(!statin&&age>=50&&!hasCkdPattern&&priorities.length<3) priorities.push('avaliar risco cardiovascular e indicação de estatina');
 if(priorities.length) summary.push('Prioridades: '+priorities.slice(0,3).join('; ')+'.');
 if(risk2!==null&&risk5!==null&&egfr<60){
   if(risk2>=.40) summary.push('O risco calculado justifica seguimento nefrológico e planeamento atempado de TSFR.');
