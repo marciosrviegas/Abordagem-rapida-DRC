@@ -107,9 +107,16 @@ if(raas&&acr>=30){
 }
 
 if(!raas&&acr>=30&&egfr>=15){
- if(dm2){rec.push({c:'green',t:'IECA/ARA · iniciar/avaliar',p:'Na DRC com diabetes e albuminúria A2/A3, a KDIGO recomenda IECA ou ARA, incluindo em G1–G4, titulados para a maior dose aprovada tolerada. Monitorizar PA, creatinina e potássio 2–4 semanas após iniciar ou aumentar a dose.'});}
- else if(acr>=300){rec.push({c:'green',t:'IECA/ARA · iniciar/avaliar',p:'Na DRC com albuminúria A3, a KDIGO recomenda IECA ou ARA mesmo sem diabetes, incluindo em G1–G4. Titular para a maior dose aprovada tolerada e monitorizar PA, creatinina e potássio 2–4 semanas após iniciar ou aumentar a dose.'});}
- else {rec.push({c:'amber',t:'IECA/ARA · considerar',p:'Na DRC não diabética com albuminúria A2, a KDIGO sugere iniciar IECA ou ARA, incluindo em G1–G4. Titular para a maior dose aprovada tolerada e monitorizar PA, creatinina e potássio.'});}
+ const raasIndication=dm2?'Na DRC com diabetes e albuminúria A2/A3, a KDIGO recomenda IECA ou ARA, incluindo em G1–G4.':acr>=300?'Na DRC com albuminúria A3, a KDIGO recomenda IECA ou ARA mesmo sem diabetes, incluindo em G1–G4.':'Na DRC não diabética com albuminúria A2, a KDIGO sugere iniciar IECA ou ARA, incluindo em G1–G4.';
+ if(k>=6.0){
+  rec.push({c:'red',t:'IECA/ARA · indicação presente, mas adiar perante hipercaliemia',p:`${raasIndication} Contudo, com K+ ≥6,0 mmol/L, priorizar avaliação e tratamento da hipercaliemia antes de iniciar o IECA/ARA. Após controlo do K+, reavaliar a introdução, titulando para a maior dose tolerada e monitorizando PA, creatinina e potássio.`});
+ }else if(k>=5.5){
+  rec.push({c:'amber',t:'IECA/ARA · indicação presente, mas controlar hipercaliemia antes de iniciar',p:`${raasIndication} Com K+ 5,5–5,9 mmol/L, procurar e corrigir fatores reversíveis e controlar a hipercaliemia antes de iniciar o IECA/ARA. Ponderar diurético se apropriado, bicarbonato se houver acidose metabólica e fármacos redutores de potássio, incluindo patirómero, ciclosilicato de zircónio ou resinas de troca iónica, de acordo com o contexto e disponibilidade local. Após controlo do K+, reavaliar a introdução e monitorizar PA, creatinina e potássio 2–4 semanas após iniciar ou aumentar a dose.`});
+ }else if(dm2||acr>=300){
+  rec.push({c:'green',t:'IECA/ARA · iniciar/avaliar',p:`${raasIndication} Titular para a maior dose aprovada tolerada. Monitorizar PA, creatinina e potássio 2–4 semanas após iniciar ou aumentar a dose.`});
+ }else{
+  rec.push({c:'amber',t:'IECA/ARA · considerar',p:`${raasIndication} Titular para a maior dose aprovada tolerada e monitorizar PA, creatinina e potássio.`});
+ }
 }
 if(!raas&&acr<30&&(htn||hf)){rec.push({c:'amber',t:'IECA/ARA · avaliar indicação clínica',p:'Mesmo com A1, um IECA ou ARA pode estar indicado para tratamento da HTA ou da insuficiência cardíaca com fração de ejeção reduzida. A decisão deve seguir a indicação clínica específica.'});}
 
