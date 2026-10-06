@@ -89,7 +89,22 @@ let pills=[];if(dm2)pills.push('DM2');if(hf)pills.push('IC');if(ascvd)pills.push
 let rec=[];
 if(egfr<15)rec.push({c:'amber',t:'G5: foco adicional em preparação de TSFR',p:'Reavaliar sintomas urémicos, complicações da DRC, trajetória da TFGe e plano de transplante/acesso. Não extrapolar automaticamente RCTs de TFGe ≥20–25 para G5 avançada.'});
 const hasCkd=egfr<60||acr>=30;
-if(!sglt2&&egfr>=20&&hasCkd&&(dm2||acr>=200||hf||egfr<=45))rec.push({c:'green',t:'SGLT2i · considerar/iniciar',p:'DM2 + DRC: recomendado com TFGe ≥20 mL/min/1,73 m², independentemente da albuminúria. Sem DM2, recomendar também com TFGe ≥20 e ACR ≥200 mg/g, na presença de insuficiência cardíaca, ou em TFGe 20–45 mesmo com ACR <200 mg/g. Antecipar pequena queda inicial da TFGe e rever estado volémico.'});
+if(!sglt2&&egfr>=20&&hasCkd&&(dm2||acr>=200||hf||egfr<=45)){
+  let p='';
+  if(dm2){
+    p='DM2 + DRC: iSGLT2 recomendado com TFGe ≥20 mL/min/1,73 m², independentemente da albuminúria.';
+    if(hf)p+=' A presença de insuficiência cardíaca constitui também indicação cardiorrenal.';
+  }else if(hf){
+    p='DRC + insuficiência cardíaca: iSGLT2 recomendado com TFGe ≥20 mL/min/1,73 m², independentemente da albuminúria.';
+    if(acr>=200)p+=' ACR ≥200 mg/g constitui também indicação em DRC.';
+  }else if(acr>=200){
+    p='DRC com ACR ≥200 mg/g: iSGLT2 recomendado com TFGe ≥20 mL/min/1,73 m².';
+  }else{
+    p='DRC com TFGe 20–45 mL/min/1,73 m² e ACR <200 mg/g: iSGLT2 pode ser usado mesmo sem diabetes.';
+  }
+  p+=' Antecipar pequena queda inicial da TFGe e rever estado volémico.';
+  rec.push({c:'green',t:'SGLT2i · considerar/iniciar',p:p});
+}
 if(sglt2){
   if(egfr<20)rec.push({c:'green',t:'SGLT2i · manter se tolerado',p:'TFGe <20 mL/min/1,73 m²: não suspender automaticamente apenas pela descida da TFGe. Manter se tolerado, salvo intolerância ou início de terapêutica de substituição renal. Suspender temporariamente em jejum prolongado, cirurgia ou doença crítica/aguda grave.'});
   else rec.push({c:'green',t:'SGLT2i · manter',p:'Manter o SGLT2i se tolerado. Monitorizar função renal e estado volémico e suspender temporariamente em jejum prolongado, cirurgia ou doença crítica/aguda grave.'});
@@ -179,7 +194,12 @@ if(risk2!==null&&risk5!==null){
 let priorities=[];
 if(k>=5.5) priorities.push('priorizar avaliação e correção da hipercaliemia antes de intensificar fármacos com risco de hiperK');
 else if(k<3.5) priorities.push('reavaliar e corrigir a hipocaliemia');
-if(!sglt2&&egfr>=20&&hasCkd&&(dm2||acr>=200||hf||egfr<=45)) priorities.push('considerar início de SGLT2i');
+if(!sglt2&&egfr>=20&&hasCkd&&(dm2||acr>=200||hf||egfr<=45)){
+  if(dm2) priorities.push('considerar início de SGLT2i (DM2 + DRC)');
+  else if(hf) priorities.push('considerar início de SGLT2i (IC + DRC)');
+  else if(acr>=200) priorities.push('considerar início de SGLT2i (ACR ≥200 mg/g)');
+  else priorities.push('considerar início de SGLT2i (TFGe 20–45)');
+}
 if(raas&&acr>=30) priorities.push('manter/otimizar o SRAA');
 else if(!raas&&acr>=30&&egfr>=15) priorities.push('avaliar início de IECA/ARA');
 else if(!raas&&acr<30&&(htn||hf)) priorities.push('avaliar indicação de IECA/ARA pela comorbilidade');
