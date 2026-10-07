@@ -88,9 +88,10 @@ get('initialMessage').classList.add('hidden');get('resultsContent').classList.re
 const g=egfr>=90?'G1':egfr>=60?'G2':egfr>=45?'G3a':egfr>=30?'G3b':egfr>=15?'G4':'G5',a=acr<30?'A1':acr<300?'A2':'A3';get('stage').textContent=`${g} · ${a}`; get('heroSub').textContent = (g==='G1' || g==='G2') ? (a==='A1' ? 'TFGe preservada · G1/G2 A1 não demonstra DRC por si só' : 'TFGe preservada · G1/G2 A2/A3 corresponde a DRC se a albuminúria for persistente ≥3 meses') : (a==='A3' ? 'Risco de progressão aumentado · integrar TFGe, albuminúria e KFRE' : 'Integrar TFGe, albuminúria, evolução e contexto clínico');
 let pills=[];if(dm1)pills.push('DM1');if(dm2)pills.push('DM2');if(hf)pills.push('IC');if(ascvd)pills.push('DCV aterosclerótica');if(acr>=300)pills.push('A3');else if(acr>=30)pills.push('A2');if(k>=5)pills.push('K elevado');get('riskPills').innerHTML=pills.map(x=>`<span class="pill">${esc(x)}</span>`).join('');
 let rec=[];
+ let priorities=[];
 if(egfr<15)rec.push({c:'amber',t:'G5: foco adicional em preparação de TSFR',p:'Reavaliar sintomas urémicos, complicações da DRC, trajetória da TFGe e plano de transplante/acesso. Não extrapolar automaticamente RCTs de TFGe ≥20–25 para G5 avançada.'});
 const hasCkd=egfr<60||acr>=30; if(dm1&&dm2) rec.push({c:'red',t:'Diabetes · confirmar tipo',p:'DM1 e DM2 foram selecionadas simultaneamente. Confirmar a classificação da diabetes antes de interpretar as recomendações farmacológicas.'}); if(dm1&&sglt2) rec.push({c:'red',t:'DM1 + iSGLT2 · rever terapêutica',p:'Os iSGLT2 não são aprovados para utilização na diabetes tipo 1 e aumentam o risco de cetoacidose diabética, incluindo cetoacidose euglicémica. Rever a indicação e considerar suspensão em articulação com a equipa de Diabetes. Perante náuseas, vómitos, dor abdominal, mal-estar ou dispneia, considerar cetoacidose mesmo sem hiperglicemia marcada.'}); if(dm1&&finer) rec.push({c:'amber',t:'DM1 + finerenona · rever indicação',p:'A evidência que sustenta a utilização de finerenona na DRC albuminúrica diabética corresponde à DM2. A aplicação não deve extrapolar automaticamente essa indicação para DM1; rever individualmente.'}); if(dm1&&glp1) rec.push({c:'amber',t:'DM1 + GLP-1 RA · rever indicação',p:'As recomendações cardiorrenais desta aplicação para GLP-1 RA são dirigidas à DM2 com DRC e não devem ser extrapoladas automaticamente para DM1. Rever a indicação clínica individual.'});
-if(dm1&&sglt2) priorities.push('rever iSGLT2 na DM1 pelo risco de cetoacidose'); if(dm1&&finer&&priorities.length<3) priorities.push('rever indicação de finerenona na DM1'); if(dm1&&glp1&&priorities.length<3) priorities.push('rever indicação de GLP-1 RA na DM1'); if(!sglt2&&egfr>=20&&hasCkd&&(dm2Active||acr>=200||hf||egfr<=45)){
+if(dm1&&sglt2) priorities.push('rever iSGLT2 na DM1 pelo risco de cetoacidose'); if(dm1&&finer&&priorities.length<3) priorities.push('rever indicação de finerenona na DM1'); if(dm1&&glp1&&priorities.length<3) priorities.push('rever indicação de GLP-1 RA na DM1'); if(!dm1&&!sglt2&&egfr>=20&&hasCkd&&(dm2Active||acr>=200||hf||egfr<=45)){
   let p='';
   if(dm2Active){
     p='DM2 + DRC: iSGLT2 recomendado com TFGe ≥20 mL/min/1,73 m², independentemente da albuminúria.';
@@ -106,7 +107,7 @@ if(dm1&&sglt2) priorities.push('rever iSGLT2 na DM1 pelo risco de cetoacidose');
   p+=' Antecipar pequena queda inicial da TFGe e rever estado volémico.';
   rec.push({c:'green',t:'SGLT2i · considerar/iniciar',p:p});
 }
-if(sglt2){
+if(sglt2&&!dm1){
   if(egfr<20)rec.push({c:'green',t:'SGLT2i · manter se tolerado',p:'TFGe <20 mL/min/1,73 m²: não suspender automaticamente apenas pela descida da TFGe. Manter se tolerado, salvo intolerância ou início de terapêutica de substituição renal. Suspender temporariamente em jejum prolongado, cirurgia ou doença crítica/aguda grave.'});
   else rec.push({c:'green',t:'SGLT2i · manter',p:'Manter o SGLT2i se tolerado. Monitorizar função renal e estado volémico e suspender temporariamente em jejum prolongado, cirurgia ou doença crítica/aguda grave.'});
 }
@@ -144,7 +145,7 @@ if(dm2Active&&acr>=30&&egfr>=25&&k<=4.8&&!finer){
   if(raas)rec.push({c:'green',t:'Finerenona · avaliar elegibilidade',p:'DM2 + DRC albuminúrica + TFGe ≥25 + K+ ≤4,8 mmol/L, apesar de terapêutica de base otimizada incluindo IECA/ARA na maior dose tolerada: considerar finerenona. Confirmar albuminúria persistente e reavaliar K+ aproximadamente 4 semanas após iniciar ou alterar a dose.'});
   else rec.push({c:'amber',t:'Finerenona · primeiro otimizar o SRAA',p:'DM2 + DRC albuminúrica + TFGe ≥25 + K+ ≤4,8 mmol/L: existe indicação potencial para finerenona, mas a terapêutica de base com IECA/ARA deve ser avaliada e otimizada para a maior dose tolerada antes de adicionar finerenona. Confirmar albuminúria persistente.'});
 }
-if(finer){
+if(finer&&!dm1){
  if(egfr<15)rec.push({c:'red',t:'Finerenona · descontinuar',p:'TFGe <15 mL/min/1,73 m²: descontinuar finerenona.'});
  else if(k>5.5)rec.push({c:'red',t:'Finerenona · suspender temporariamente por hipercaliemia',p:'K+ >5,5 mmol/L: suspender temporariamente a finerenona e reavaliar o K+. Corrigir fatores precipitantes e ponderar medidas para redução da caliemia, incluindo diurético quando apropriado, bicarbonato se houver acidose metabólica e fármacos redutores de potássio — patirómero, ciclosilicato de zircónio ou resinas de troca iónica — de acordo com o contexto e disponibilidade local. Ponderar reintrodução quando K+ ≤5,0 mmol/L.'});
  else rec.push({c:'amber',t:'Finerenona · manter e monitorizar K',p:'Reavaliar K+ e função renal periodicamente. Se TFGe 15–24 mL/min/1,73 m², não suspender automaticamente apenas pela TFGe; reavaliar individualmente a indicação e o benefício/risco.'});
@@ -199,10 +200,9 @@ if(risk2!==null&&risk5!==null){
 }else{
   summary.push('KFRE não calculável com os dados introduzidos.');
 }
-let priorities=[];
 if(k>=5.5) priorities.push('priorizar avaliação e correção da hipercaliemia antes de intensificar fármacos com risco de hiperK');
 else if(k<3.5) priorities.push('reavaliar e corrigir a hipocaliemia');
-if(!sglt2&&egfr>=20&&hasCkd&&(dm2Active||acr>=200||hf||egfr<=45)){
+if(!dm1&&!sglt2&&egfr>=20&&hasCkd&&(dm2Active||acr>=200||hf||egfr<=45)){
   if(dm2Active) priorities.push('considerar início de SGLT2i (DM2 + DRC)');
   else if(hf) priorities.push('considerar início de SGLT2i (IC + DRC)');
   else if(acr>=200) priorities.push('considerar início de SGLT2i (ACR ≥200 mg/g)');
