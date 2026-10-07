@@ -133,9 +133,16 @@ if(!raas&&acr>=30&&egfr>=15){
   rec.push({c:'amber',t:'IECA/ARA · considerar',p:`${raasIndication} Titular para a maior dose aprovada tolerada e monitorizar PA, creatinina e potássio.`});
  }
 }
-if(!raas&&acr<30&&(htn||hf)){rec.push({c:'amber',t:'IECA/ARA · avaliar indicação clínica',p:'Mesmo com A1, um IECA ou ARA pode estar indicado para tratamento da HTA ou da insuficiência cardíaca com fração de ejeção reduzida. A decisão deve seguir a indicação clínica específica.'});}
+if(!raas&&acr<30&&(htn||hf)){
+  if(k>=6.0)rec.push({c:'red',t:'IECA/ARA · adiar perante hipercaliemia',p:'Mesmo com A1, um IECA ou ARA pode estar indicado para tratamento da HTA ou da insuficiência cardíaca com fração de ejeção reduzida. Contudo, com K+ ≥6,0 mmol/L, priorizar avaliação e tratamento da hipercaliemia antes de iniciar IECA/ARA. Após controlo do K+, reavaliar a indicação clínica.'});
+  else if(k>=5.5)rec.push({c:'amber',t:'IECA/ARA · controlar hipercaliemia antes de iniciar',p:'Mesmo com A1, um IECA ou ARA pode estar indicado para tratamento da HTA ou da insuficiência cardíaca com fração de ejeção reduzida. Com K+ 5,5–5,9 mmol/L, procurar e corrigir fatores reversíveis e controlar a hipercaliemia antes de iniciar. Após controlo do K+, reavaliar a indicação clínica.'});
+  else rec.push({c:'amber',t:'IECA/ARA · avaliar indicação clínica',p:'Mesmo com A1, um IECA ou ARA pode estar indicado para tratamento da HTA ou da insuficiência cardíaca com fração de ejeção reduzida. A decisão deve seguir a indicação clínica específica.'});
+}
 
-if(dm2&&acr>=30&&egfr>=25&&k<=4.8&&!finer)rec.push({c:'green',t:'Finerenona · avaliar elegibilidade',p:'DM2 + DRC albuminúrica + TFGe ≥25 e potássio ≤4,8 mmol/L: considerar finerenona após terapêutica de base otimizada, incluindo SRAA na maior dose tolerada. Reavaliar K aproximadamente 4 semanas após iniciar ou alterar a dose.'});
+if(dm2&&acr>=30&&egfr>=25&&k<=4.8&&!finer){
+  if(raas)rec.push({c:'green',t:'Finerenona · avaliar elegibilidade',p:'DM2 + DRC albuminúrica + TFGe ≥25 + K+ ≤4,8 mmol/L, apesar de terapêutica de base otimizada incluindo IECA/ARA na maior dose tolerada: considerar finerenona. Confirmar albuminúria persistente e reavaliar K+ aproximadamente 4 semanas após iniciar ou alterar a dose.'});
+  else rec.push({c:'amber',t:'Finerenona · primeiro otimizar o SRAA',p:'DM2 + DRC albuminúrica + TFGe ≥25 + K+ ≤4,8 mmol/L: existe indicação potencial para finerenona, mas a terapêutica de base com IECA/ARA deve ser avaliada e otimizada para a maior dose tolerada antes de adicionar finerenona. Confirmar albuminúria persistente.'});
+}
 if(finer){
  if(egfr<15)rec.push({c:'red',t:'Finerenona · descontinuar',p:'TFGe <15 mL/min/1,73 m²: descontinuar finerenona.'});
  else if(k>5.5)rec.push({c:'red',t:'Finerenona · suspender temporariamente por hipercaliemia',p:'K+ >5,5 mmol/L: suspender temporariamente a finerenona e reavaliar o K+. Corrigir fatores precipitantes e ponderar medidas para redução da caliemia, incluindo diurético quando apropriado, bicarbonato se houver acidose metabólica e fármacos redutores de potássio — patirómero, ciclosilicato de zircónio ou resinas de troca iónica — de acordo com o contexto e disponibilidade local. Ponderar reintrodução quando K+ ≤5,0 mmol/L.'});
@@ -201,9 +208,20 @@ if(!sglt2&&egfr>=20&&hasCkd&&(dm2||acr>=200||hf||egfr<=45)){
   else priorities.push('considerar início de SGLT2i (TFGe 20–45)');
 }
 if(raas&&acr>=30) priorities.push('manter/otimizar o SRAA');
-else if(!raas&&acr>=30&&egfr>=15) priorities.push('avaliar início de IECA/ARA');
-else if(!raas&&acr<30&&(htn||hf)) priorities.push('avaliar indicação de IECA/ARA pela comorbilidade');
-if(dm2&&acr>=30&&egfr>=25&&k<=4.8&&!finer) priorities.push('avaliar elegibilidade para finerenona');
+else if(!raas&&acr>=30&&egfr>=15){
+  if(k>=6.0) priorities.push('tratar hipercaliemia antes de iniciar IECA/ARA');
+  else if(k>=5.5) priorities.push('controlar hipercaliemia antes de iniciar IECA/ARA');
+  else priorities.push('avaliar início de IECA/ARA');
+}
+else if(!raas&&acr<30&&(htn||hf)){
+  if(k>=6.0) priorities.push('tratar hipercaliemia antes de iniciar IECA/ARA pela comorbilidade');
+  else if(k>=5.5) priorities.push('controlar hipercaliemia antes de iniciar IECA/ARA pela comorbilidade');
+  else priorities.push('avaliar indicação de IECA/ARA pela comorbilidade');
+}
+if(dm2&&acr>=30&&egfr>=25&&k<=4.8&&!finer){
+  if(raas) priorities.push('avaliar elegibilidade para finerenona após otimização do SRAA');
+  else priorities.push('otimizar SRAA antes de avaliar finerenona');
+}
 if(dm2&&!glp1&&priorities.length<3) priorities.push('avaliar GLP-1 RA conforme controlo metabólico e risco CV');
 if(!statin&&age>=50&&hasCkdPattern&&priorities.length<3) priorities.push('avaliar estatina segundo KDIGO, individualizando em idade muito avançada ou fragilidade');
 if(!statin&&age>=50&&!hasCkdPattern&&priorities.length<3) priorities.push('avaliar risco cardiovascular e indicação de estatina');
